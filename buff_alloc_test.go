@@ -37,6 +37,10 @@ func TestBuffAllocator_Allocate(t *testing.T) {
 		t.Errorf("buf cap is %d, should be %d", cap(buf), 128)
 	}
 
+	if len(buf) != 0 {
+		t.Errorf("buff len should be 0")
+	}
+
 	buf = ba.Allocate(256)
 	if cap(buf) != 256 {
 		t.Errorf("buf cap is %d, should be %d", cap(buf), 256)
@@ -56,6 +60,14 @@ func TestBuffAllocator_Release(t *testing.T) {
 		badBuff := make([]byte, 1000)
 		ba.Release(badBuff)
 	})
+
+	buff := ba.Allocate(256)
+	buff = buff[:12]
+	ba.Release(buff)
+	buff = ba.Allocate(256)
+	if len(buff) != 0 {
+		t.Errorf("buff len should be 0")
+	}
 }
 
 func BenchmarkBuffAllocator_Allocate_1024(b *testing.B) {

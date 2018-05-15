@@ -52,7 +52,7 @@ func (ba *buffAllocator) Allocate(size int) (buff []byte) {
 func (ba *buffAllocator) Release(buff []byte) {
 	buffcap := cap(buff)
 	ba.validateReleaseBuffSize(buffcap)
-	buff = buff[:buffcap]
+	buff = buff[:0]
 	ba.getPool(buffcap).Put(buff)
 }
 
@@ -80,7 +80,7 @@ func (ba *buffAllocator) getPool(size int) (pool *sync.Pool) {
 	if pool == nil {
 		pool = &sync.Pool{
 			New: func() interface{} {
-				return make([]byte, normSize)
+				return make([]byte, 0, normSize)
 			},
 		}
 		ba.pools[poolIdx] = pool
