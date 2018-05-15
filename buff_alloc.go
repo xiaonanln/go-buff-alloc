@@ -1,4 +1,4 @@
-package go_buff_alloc
+package buffalloc
 
 import (
 	"fmt"
