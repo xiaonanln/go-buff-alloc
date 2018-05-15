@@ -9,11 +9,17 @@ var (
 	invalidSizeError = fmt.Errorf("invalid buffer size")
 )
 
+// BuffAllocator is used to allocate and release buffers efficiently without large GC overhead.
+//
 type BuffAllocator interface {
+	// Allocate allocates a new buffer whose capacity is larger than or equal to the specified size
+	// Allocate assures that cap(buff) >= size and len(buff) == 0
 	Allocate(size int) (buff []byte)
+	// Release releases a buffer which must be previously allocated by Allocate of the same BuffAllocator
 	Release(buff []byte)
 }
 
+// NewBuffAllocator creates a new buffer allocator
 func NewBuffAllocator(minimalSize int, multiply int) BuffAllocator {
 	if minimalSize < 1 {
 		panic(fmt.Errorf("minimalSize should be at least 1"))
